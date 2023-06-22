@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tax Calculator</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            color: #000;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        #calculator {
+            background-color: #3CB371;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #fff;
+            margin-top: 0;
+        }
+
+        h2 {
+            color: #fff;
+        }
+
+        label {
+            display: block;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 5px;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        button {
+            padding: 8px 15px;
+            font-size: 14px;
+            background-color: #fff;
+            color: #3CB371;
+            border: none;
+            cursor: pointer;
+        }
+
+        #output {
+            padding: 10px;
+            background-color: #fff;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        #estimate-options {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .estimate-option {
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="calculator">
+        <h1>Tax Calculator</h1>
+
+        <div>
+            <label for="income">What is your current income?</label>
+            <input type="number" id="income" placeholder="Enter income">
+        </div>
+
+        <h2>Estimates</h2>
+
+        <div id="estimate-options">
+            <button class="estimate-option" onclick="calculateTax('conservative')">Conservative</button>
+            <button class="estimate-option" onclick="calculateTax('medium')">Medium</button>
+            <button class="estimate-option" onclick="calculateTax('radical')">Radical</button>
+        </div>
+
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function calculateTax(estimate) {
+            var income = document.getElementById("income").value;
+            var currentTax = income * 0.0425;
+
+            var newTax;
+            if (estimate === "conservative") {
+                newTax = calcConservativeTaxRate(income);
+            } else if (estimate === "medium") {
+                newTax = calcMediumTaxRate(income);
+            } else if (estimate === "radical") {
+                newTax = calcRadicalTaxRate(income);
+            }
+
+            var output = document.getElementById("output");
+            output.innerHTML = "Currently you pay $" + currentTax.toFixed(2) + " in taxes.<br>" +
+                "Under a " + estimate + " graduated income tax system, you would pay $" + newTax.toFixed(2) + " in taxes.<br>";
+
+            if (currentTax - newTax > 0) {
+                output.innerHTML += "You would save $" + (currentTax - newTax).toFixed(2) + " under this graduated income tax system.";
+            } else {
+                output.innerHTML += "Your taxes would increase $" + (newTax - currentTax).toFixed(2) + " under this graduated income tax system.";
+            }
+
+            output.style.display = "block";
+        }
+
+        function calcConservativeTaxRate(income) {
+            var newTax = 0;
+            if (income < 150000) {
+                newTax = income * 0.0399;
+            } else if (income < 250000) {
+                newTax = ((income - 150000) * 0.0599) + (150000 * 0.0399);
+            } else {
+                newTax = ((income - 250000) * 0.0799) + (150000 * 0.0399) + (100000 * 0.0599);
+            }
+            return newTax;
+        }
+
+        function calcMediumTaxRate(income) {
+            var newTax = 0;
+            if (income < 32187) {
+                newTax = income * 0.04;
+            } else if (income < 87740) {
+                newTax = ((income - 32187) * 0.0425) + (32187 * 0.04);
+            } else if (income < 273873) {
+                newTax = ((income - 87740) * 0.055) + (55553 * 0.0425) + (32187 * 0.04);
+            } else {
+                newTax = ((income - 273873) * 0.0875) + (186133 * 0.055) + (55553 * 0.0425) + (32187 * 0.04);
+            }
+            return newTax;
+        }
+
+        function calcRadicalTaxRate(income) {
+            var newTax = 0;
+            if (income < 32187) {
+                newTax = income * 0.04;
+            } else if (income < 87740) {
+                newTax = ((income - 32187) * 0.0545) + (32187 * 0.04);
+            } else if (income < 273873) {
+                newTax = ((income - 87740) * 0.065) + (55553 * 0.0545) + (32187 * 0.04);
+            } else {
+                newTax = ((income - 273873) * 0.085) + (186133 * 0.065) + (55553 * 0.0545) + (32187 * 0.04);
+            }
+            return newTax;
+        }
+    </script>
+</body>
+</html>
